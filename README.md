@@ -9,15 +9,18 @@ What I will be creating is an Atari game called Breakout, which is where a ball 
 ## Features
 - Feature 1:
   A ball that spawns in from which the player must control a paddle to deflect the ball back into blocks that break.
-  I am going to initalize a ball that spawns at a specific location on the screen and when you start the game it moves in a set direction with base speed. You will control a paddle at the bottom with left and right inputs (probably arrow keys) and when the ball hits a block, the direction is reversed causing it to come back down.
 
-- Feature 2
+I am going to initalize a ball that spawns at a specific location on the screen and when you start the game it moves in a set direction with base speed. You will control a paddle at the bottom with left and right inputs (probably arrow keys) and when the ball hits a block, the direction is reversed causing it to come back down.
+
+- Feature 2:
   Having a scoring system and different levels to keep the player engaged.
-  Every time the player breaks a block, the score increases by a set number of points. This number will stop increasing when the player fails, and or beats the game to reach a max score. The way to go to a next level will be determined if there are any remaining blocks on the screen and if not it will move onto the next level.
 
-- Feature 3
+Every time the player breaks a block, the score increases by a set number of points. This number will stop increasing when the player fails, and or beats the game to reach a max score. The way to go to a next level will be determined if there are any remaining blocks on the screen and if not it will move onto the next level.
+
+- Feature 3:
   Different power-ups that enhance the gameplay to make it more interesting.
-  Power-ups will be spawned randomly when a brick is destroyed up to a certain amount per level, and they will provide specific effects such as bigger paddle size, giving extra points multiplier, etc. They will fall slowly from a broken block, and can be collected by colliding with the paddle that the player controls.
+
+Power-ups will be spawned randomly when a brick is destroyed up to a certain amount per level, and they will provide specific effects such as bigger paddle size, giving extra points multiplier, etc. They will fall slowly from a broken block, and can be collected by colliding with the paddle that the player controls.
 
 ## Challenges
 - One of the most challenging things would be the game physics itself, making sure everything works smoothly and correctly.
