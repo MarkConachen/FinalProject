@@ -52,7 +52,7 @@ class Paddle:
         self.enlarged = False
 
     def update(self):
-        if self.enlarged and pygame.time.get_ticks() - self.enlarge_time > 15000: # 15 seconds
+        if self.enlarged and pygame.time.get_ticks() - self.enlarge_time > 10000: # 10 seconds
             self.reset_size()
 
 class Ball:
@@ -131,7 +131,7 @@ class PowerUp:
 
         self.image = pygame.image.fromstring(data, size, mode)
         self.rect = self.image.get_rect(center=(x, y))
-        self.dy = 2
+        self.dy = 4
         self.powerup_type = powerup_type
 
     def move(self):
@@ -211,6 +211,8 @@ def main():
             paddle.move(-5) # Move left
         if keys[pygame.K_RIGHT]:
             paddle.move(5)  # Move right
+
+        paddle.update()
         
         for ball in balls[:]:
             if not ball.move():
