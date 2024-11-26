@@ -12,7 +12,9 @@ BLUE = (0, 0, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 
-BLOCK_COLOR = (255, 165, 0)
+BLOCK_COLOR_LEVEL_1 = (255, 165, 0)
+BLOCK_COLOR_LEVEL_2 = (0, 255, 255)
+BLOCK_COLOR_LEVEL_3 = (255, 0, 255)
 
 class Paddle:
     def __init__(self, x, y, width, height, color):
@@ -77,20 +79,33 @@ def create_level(level):
     block_height = 30
 
     if level == 1:
-        rows = 3
-        cols = 10
+        rows = 1
+        cols = 1
+        block_color = BLOCK_COLOR_LEVEL_1
     elif level == 2:
-        rows = 4
-        cols = 10
+        rows = 1
+        cols = 1
+        block_color = BLOCK_COLOR_LEVEL_2
     elif level == 3:
         rows = 5
         cols = 10
+        block_color = BLOCK_COLOR_LEVEL_3
 
     for row in range(rows):
         for col in range(cols):
-            blocks.append(Block(col * (block_width + 10) + 50, row * (block_height + 5) + 50, block_width, block_height, BLOCK_COLOR))
+            blocks.append(Block(col * (block_width + 10) + 50, row * (block_height + 5) + 50, block_width, block_height, block_color))
 
     return blocks
+
+def get_paddle_color(level):
+    if level == 1:
+        return WHITE
+    elif level == 2:
+        return BLUE
+    elif level == 3:
+        return RED
+    else:
+        return WHITE
 
 def main():
     clock = pygame.time.Clock()
@@ -127,6 +142,7 @@ def main():
         if len(blocks) == 0:
             level += 1
             blocks = create_level(level)
+            paddle.color = get_paddle_color(level)
 
         screen.fill((0, 0, 0))
 
