@@ -15,10 +15,12 @@ GREEN = (0, 255, 0)
 BLOCK_COLOR_LEVEL_1 = (255, 165, 0)
 BLOCK_COLOR_LEVEL_2 = (0, 255, 255)
 BLOCK_COLOR_LEVEL_3 = (255, 0, 255)
+BLOCK_COLOR_UNBREAKABLE = (128, 128, 128)
 
 BLOCK_POINTS_LEVEL_1 = 10
 BLOCK_POINTS_LEVEL_2 = 20
 BLOCK_POINTS_LEVEL_3 = 30
+BLOCK_POINTS_UNBREAKABLE = 0
 
 class Paddle:
     def __init__(self, x, y, width, height, color):
@@ -66,10 +68,11 @@ class Ball:
         return ball_rect.colliderect(paddle.rect)
 
 class Block:
-    def __init__(self, x, y, width, height, color, point_value):
+    def __init__(self, x, y, width, height, color, point_value, destructible=True):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color
         self.point_value = point_value
+        self.destructible = destructible
 
     def draw(self):
         pygame.draw.rect(screen, self.color, self.rect)
@@ -128,6 +131,13 @@ def create_level_from_file(level_file):
                         block_width, block_height,
                         BLOCK_COLOR_LEVEL_3, BLOCK_POINTS_LEVEL_3
                     ))
+                elif char == 'U': # Letter for unbreakable block
+                    blocks.append(Block(
+                        col_idx * (block_width + block_spacing) + x_offset,
+                        row_idx * (block_height + block_spacing) + y_offset,
+                        block_width, block_height,
+                        BLOCK_COLOR_UNBREAKABLE, BLOCK_POINTS_UNBREAKABLE, destructible=False
+                    ))
         return blocks
     except FileNotFoundError:
         print(f"Level file {level_file} not found.")
@@ -138,7 +148,7 @@ def get_level_file(level):
 
 def main():
     clock = pygame.time.Clock()
-    level = 3
+    level = 1
     running = True
     score = 0
 
@@ -167,8 +177,9 @@ def main():
         for block in blocks[:]:
             if block.impacts_with_ball(ball):
                 ball.dy *= -1
-                blocks.remove(block)
-                score += block.point_value
+                if block.destructible:
+                 blocks.remove(block)
+                 score += block.point_value
 
         if len(blocks) == 0:
             level += 1
