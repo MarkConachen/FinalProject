@@ -205,6 +205,10 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+    
+        if not balls:
+            running = False
+            game_over(score)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
@@ -269,6 +273,20 @@ def main():
         clock.tick(60)
 
     pygame.quit()
+
+def game_over(score):
+    print(f"Game Over! Final Score: {score}")
+    
+    font = pygame.font.SysFont(None, 72)
+    game_over_text = font.render("Game Over!", True, RED)
+    final_score_text = font.render(f"Final Score: {score}", True, WHITE)
+
+    screen.fill((0, 0, 0))
+    screen.blit(game_over_text, (SCREEN_WIDTH // 2 - game_over_text.get_width() // 2, SCREEN_HEIGHT // 2 - 50))
+    screen.blit(final_score_text, (SCREEN_WIDTH // 2 - final_score_text.get_width() // 2, SCREEN_HEIGHT // 2 + 50))
+    pygame.display.flip()
+
+    pygame.time.wait(6000)
 
 if __name__ == "__main__":
     main()
