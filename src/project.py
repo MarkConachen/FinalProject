@@ -66,7 +66,11 @@ class Ball:
     def impacts_with_paddle(self, paddle):
         ball_rect = pygame.Rect(self.x - self.radius, self.y - self.radius, self.radius * 2, self.radius * 2)
         return ball_rect.colliderect(paddle.rect)
-
+    
+    def impacts_with_block(self, block):
+        ball_rect = pygame.Rect(self.x - self.radius, self.y - self.radius, self.radius * 2, self.radius * 2)
+        return ball_rect.colliderect(block.rect)   
+    
 class Block:
     def __init__(self, x, y, width, height, color, point_value, destructible=True):
         self.rect = pygame.Rect(x, y, width, height)
@@ -148,7 +152,7 @@ def get_level_file(level):
 
 def main():
     clock = pygame.time.Clock()
-    level = 1
+    level = 3
     running = True
     score = 0
 
@@ -177,9 +181,15 @@ def main():
         for block in blocks[:]:
             if block.impacts_with_ball(ball):
                 ball.dy *= -1
+                
                 if block.destructible:
-                 blocks.remove(block)
-                 score += block.point_value
+                    blocks.remove(block)
+                    score += block.point_value
+
+                if ball.y < block.rect.top:
+                    ball.y = block.rect.top - ball.radius
+                elif ball.y > block.rect.bottom:
+                    ball.y = block.rect.bottom + ball.radius
 
         if len(blocks) == 0:
             level += 1
