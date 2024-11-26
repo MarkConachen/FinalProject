@@ -45,7 +45,7 @@ class Paddle:
             self.rect.right = SCREEN_WIDTH
 
     def enlarge(self):
-        self.rect.width *= 2.3
+        self.rect.width *= 1.4
         self.enlarged = True
         self.enlarge_time = pygame.time.get_ticks()
 
@@ -241,7 +241,7 @@ def main():
                     if block.destructible:
                         blocks.remove(block)
                         score += block.point_value
-                        if random.random() < 0.9:
+                        if random.random() < 0.2:
                             powerup_type = random.choice(['enlarge', 'extra_ball'])
                             powerups.append(PowerUp(block.rect.centerx, block.rect.centery, powerup_type))
 
