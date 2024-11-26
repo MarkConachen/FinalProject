@@ -32,7 +32,7 @@ class Ball:
         self.x = x
         self.y = y
         self.radius = radius
-        self.dx = 5  # Ball horizontal speed
+        self.dx = 4.5  # Ball horizontal speed
         self.dy = 5  # Ball vertical speed
 
     def move(self):
@@ -43,7 +43,7 @@ class Ball:
             self.dx *= -1 # Reverse horizontal direction on impact
 
         if self.y - self.radius <= 0:
-            self.dy *-1 # Reverse vertical direction on impact
+            self.dy *= -1 # Reverse vertical direction on impact
 
         if self.y + self.radius >= SCREEN_HEIGHT:
             return False
