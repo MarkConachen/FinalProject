@@ -21,8 +21,3 @@ and clear the screen of all power-ups and balls that were from the previous leve
  very unique in gameplay but keeping the old-school style of this game would be ideal. 
 
 Overall this project was an accumulation of knowledge I learned over the semester as a beginner coder, and I really did enjoy this project to it's full potential. I learned new techniques through this project and did my fair share of documentation diving (tm) to help assist me in creating a game that got me into this field to begin with.
-<<<<<<< HEAD
-There were a lot of challenges that made me doubt if I could really implement some of the features correctly and not have a empty shell of a game to showcase. I truly hope you enjoyed watching (and or playing) my game, and atleast it showcased a reimagination of the Atari game Breakout.
-=======
-There were a lot of challenges that made me doubt if I could really implement some of the features correctly and not have a empty shell of a game to showcase. I truly hope you enjoyed watching (and or playing) my game, and atleast it showcased a reimagination of the Atari game Breakout.
->>>>>>> fd3458d1ca1a0436801186cc969079a8a87453ab
