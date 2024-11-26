@@ -269,7 +269,7 @@ def main():
                 running = False
                 game_over(score)
 
-        screen.fill((0, 0, 0))
+        screen.fill((10, 10, 10))
         paddle.draw()
         for ball in balls:
             ball.draw()
