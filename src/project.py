@@ -1,4 +1,6 @@
 import pygame
+import random
+from PIL import Image
 
 pygame.init()
 
@@ -42,8 +44,8 @@ class Ball:
         self.x = x
         self.y = y
         self.radius = radius
-        self.dx = 4.5  # Ball horizontal speed
-        self.dy = 5  # Ball vertical speed
+        self.dx = random.choice([-4, 4])
+        self.dy = -4
 
     def move(self):
         self.x += self.dx
@@ -59,18 +61,17 @@ class Ball:
             return False
         return True
 
-
     def draw(self):
         pygame.draw.circle(screen, GREEN, (self.x, self.y), self.radius)
 
     def impacts_with_paddle(self, paddle):
         ball_rect = pygame.Rect(self.x - self.radius, self.y - self.radius, self.radius * 2, self.radius * 2)
         return ball_rect.colliderect(paddle.rect)
-    
+
     def impacts_with_block(self, block):
         ball_rect = pygame.Rect(self.x - self.radius, self.y - self.radius, self.radius * 2, self.radius * 2)
-        return ball_rect.colliderect(block.rect)   
-    
+        return ball_rect.colliderect(block.rect)
+
 class Block:
     def __init__(self, x, y, width, height, color, point_value, destructible=True):
         self.rect = pygame.Rect(x, y, width, height)
@@ -99,6 +100,27 @@ def draw_score(score):
     font = pygame.font.SysFont(None, 36)
     score_text = font.render(f"Score: {score}", True, WHITE)
     screen.blit(score_text, (10, 10))
+
+class PowerUp:
+    def __init__(self, x, y):
+        pil_image = Image.open("powerup1.png").convert("RGBA")
+        pil_image = pil_image.resize((45, 45), Image.Resampling.LANCZOS)
+        mode = pil_image.mode
+        size = pil_image.size
+        data = pil_image.tobytes()
+
+        self.image = pygame.image.fromstring(data, size, mode)
+        self.rect = self.image.get_rect(center=(x, y))
+        self.dy = 2
+
+    def move(self):
+        self.rect.y += self.dy
+
+    def draw(self):
+        screen.blit(self.image, self.rect)
+
+    def impacts_with_paddle(self, paddle):
+        return self.rect.colliderect(paddle.rect)
 
 def create_level_from_file(level_file):
     blocks = []
@@ -147,19 +169,16 @@ def create_level_from_file(level_file):
         print(f"Level file {level_file} not found.")
         return []
 
-def get_level_file(level):
-    return f"level{level}.txt"
-
 def main():
     clock = pygame.time.Clock()
-    level = 3
+    level = 1
     running = True
     score = 0
 
     paddle = Paddle(SCREEN_WIDTH // 2 - 60, SCREEN_HEIGHT - 30, 120, 20, color=WHITE)
-    ball = Ball(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 10)
-
-    blocks = create_level_from_file(get_level_file(level))
+    balls = [Ball(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 10)]
+    blocks = create_level_from_file(f"level{level}.txt")
+    powerups = []
 
     while running:
         for event in pygame.event.get():
@@ -172,39 +191,52 @@ def main():
         if keys[pygame.K_RIGHT]:
             paddle.move(5)  # Move right
 
-        if not ball.move():
-            running = False
+        new_balls = []
+        for ball in balls[:]:
+            if not ball.move():
+                balls.remove(ball)
 
-        if ball.impacts_with_paddle(paddle):
-            ball.dy *= -1
-
-        for block in blocks[:]:
-            if block.impacts_with_ball(ball):
+            if ball.impacts_with_paddle(paddle):
                 ball.dy *= -1
-                
-                if block.destructible:
-                    blocks.remove(block)
-                    score += block.point_value
 
-                if ball.y < block.rect.top:
-                    ball.y = block.rect.top - ball.radius
-                elif ball.y > block.rect.bottom:
-                    ball.y = block.rect.bottom + ball.radius
+            for block in blocks[:]:
+                if ball.impacts_with_block(block):
+                    ball.dy *= -1
+                    if block.destructible:
+                        blocks.remove(block)
+                        score += block.point_value
+                        if random.random() < 0.9: # Luck chance of powerups
+                            powerups.append(PowerUp(block.rect.centerx, block.rect.centery))
 
-        if len(blocks) == 0:
+        for powerup in powerups[:]:
+            powerup.move()
+            if powerup.impacts_with_paddle(paddle):
+                powerups.remove(powerup)
+                for _ in range(5):
+                    new_balls.append(Ball(paddle.rect.centerx, paddle.rect.top - 10, 10))
+
+            if powerup.rect.top > SCREEN_HEIGHT:
+                powerups.remove(powerup)
+
+        balls.extend(new_balls)
+
+        remaining_blocks = [block for block in blocks if block.destructible]
+        if len(remaining_blocks) == 0:
             level += 1
-            blocks = create_level_from_file(get_level_file(level))
-            paddle.color = get_paddle_color(level)
+            blocks = create_level_from_file(f"level{level}.txt")
 
         screen.fill((0, 0, 0))
-
         paddle.draw()
-        ball.draw()
-
+        for ball in balls:
+            ball.draw()
         for block in blocks:
             block.draw()
+        for powerup in powerups:
+            powerup.draw()
 
-        draw_score(score)
+        font = pygame.font.SysFont(None, 36)
+        score_text = font.render(f"Score: {score}", True, WHITE)
+        screen.blit(score_text, (10, 10))
 
         pygame.display.flip()
 
@@ -214,3 +246,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
