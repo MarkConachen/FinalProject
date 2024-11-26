@@ -78,33 +78,6 @@ class Block:
         ball_rect = pygame.Rect(ball.x - ball.radius, ball.y - ball.radius, ball.radius * 2, ball.radius * 2)
         return ball_rect.colliderect(self.rect)
 
-def create_level(level):
-    blocks = []
-    block_width = 80
-    block_height = 30
-
-    if level == 1:
-        rows = 1
-        cols = 1
-        block_color = BLOCK_COLOR_LEVEL_1
-        point_value = BLOCK_POINTS_LEVEL_1
-    elif level == 2:
-        rows = 1
-        cols = 1
-        block_color = BLOCK_COLOR_LEVEL_2
-        point_value = BLOCK_POINTS_LEVEL_2
-    elif level == 3:
-        rows = 5
-        cols = 10
-        block_color = BLOCK_COLOR_LEVEL_3
-        point_value = BLOCK_POINTS_LEVEL_3
-
-    for row in range(rows):
-        for col in range(cols):
-            blocks.append(Block(col * (block_width + 10) + 50, row * (block_height + 5) + 50, block_width, block_height, block_color, point_value))
-
-    return blocks
-
 def get_paddle_color(level):
     if level == 1:
         return WHITE
@@ -120,16 +93,59 @@ def draw_score(score):
     score_text = font.render(f"Score: {score}", True, WHITE)
     screen.blit(score_text, (10, 10))
 
+def create_level_from_file(level_file):
+    blocks = []
+    block_width = 56.5
+    block_height = 17.5
+    x_offset = 10
+    y_offset = 50
+    block_spacing = 5.4
+
+    try:
+        with open(level_file, 'r') as file:
+            rows = file.readlines()
+
+        for row_idx, row in enumerate(rows):
+            for col_idx, char in enumerate(row.strip()):
+                if char == '1':
+                    blocks.append(Block(
+                        col_idx * (block_width + block_spacing) + x_offset,
+                        row_idx * (block_height + block_spacing) + y_offset,
+                        block_width, block_height,
+                        BLOCK_COLOR_LEVEL_1, BLOCK_POINTS_LEVEL_1
+                    ))
+                elif char == '2':
+                    blocks.append(Block(
+                        col_idx * (block_width + block_spacing) + x_offset,
+                        row_idx * (block_height + block_spacing) + y_offset,
+                        block_width, block_height,
+                        BLOCK_COLOR_LEVEL_2, BLOCK_POINTS_LEVEL_2
+                    ))
+                elif char == '3':
+                    blocks.append(Block(
+                        col_idx * (block_width + block_spacing) + x_offset,
+                        row_idx * (block_height + block_spacing) + y_offset,
+                        block_width, block_height,
+                        BLOCK_COLOR_LEVEL_3, BLOCK_POINTS_LEVEL_3
+                    ))
+        return blocks
+    except FileNotFoundError:
+        print(f"Level file {level_file} not found.")
+        return []
+
+def get_level_file(level):
+    return f"level{level}.txt"
+
 def main():
     clock = pygame.time.Clock()
-    level = 1
+    level = 3
     running = True
     score = 0
 
     paddle = Paddle(SCREEN_WIDTH // 2 - 60, SCREEN_HEIGHT - 30, 120, 20, color=WHITE)
     ball = Ball(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 10)
 
-    blocks = create_level(level)
+    blocks = create_level_from_file(get_level_file(level))
 
     while running:
         for event in pygame.event.get():
@@ -156,7 +172,7 @@ def main():
 
         if len(blocks) == 0:
             level += 1
-            blocks = create_level(level)
+            blocks = create_level_from_file(get_level_file(level))
             paddle.color = get_paddle_color(level)
 
         screen.fill((0, 0, 0))
@@ -168,7 +184,7 @@ def main():
             block.draw()
 
         draw_score(score)
-            
+
         pygame.display.flip()
 
         clock.tick(60)
