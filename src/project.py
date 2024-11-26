@@ -28,6 +28,9 @@ class Paddle:
     def __init__(self, x, y, width, height, color):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color
+        self.original_width = width
+        self.enlarged = False
+        self.enlarge_time = 10000
 
     def draw(self):
         pygame.draw.rect(screen, self.color, self.rect)
@@ -38,6 +41,19 @@ class Paddle:
             self.rect.left = 0
         if self.rect.right > SCREEN_WIDTH:
             self.rect.right = SCREEN_WIDTH
+
+    def enlarge(self):
+        self.rect.width *= 2.3
+        self.enlarged = True
+        self.enlarge_time = pygame.time.get_ticks()
+
+    def reset_size(self):
+        self.rect.width = self.original_width
+        self.enlarged = False
+
+    def update(self):
+        if self.enlarged and pygame.time.get_ticks() - self.enlarge_time > 15000: # 15 seconds
+            self.reset_size()
 
 class Ball:
     def __init__(self, x, y, radius):
@@ -102,8 +118,12 @@ def draw_score(score):
     screen.blit(score_text, (10, 10))
 
 class PowerUp:
-    def __init__(self, x, y):
-        pil_image = Image.open("powerup1.png").convert("RGBA")
+    def __init__(self, x, y, powerup_type):
+        if powerup_type == 'enlarge':
+            pil_image = Image.open("powerup2.png").convert("RGBA")
+        else:
+            pil_image = Image.open("powerup1.png").convert("RGBA")
+        
         pil_image = pil_image.resize((45, 45), Image.Resampling.LANCZOS)
         mode = pil_image.mode
         size = pil_image.size
@@ -112,6 +132,7 @@ class PowerUp:
         self.image = pygame.image.fromstring(data, size, mode)
         self.rect = self.image.get_rect(center=(x, y))
         self.dy = 2
+        self.powerup_type = powerup_type
 
     def move(self):
         self.rect.y += self.dy
@@ -190,8 +211,7 @@ def main():
             paddle.move(-5) # Move left
         if keys[pygame.K_RIGHT]:
             paddle.move(5)  # Move right
-
-        new_balls = []
+        
         for ball in balls[:]:
             if not ball.move():
                 balls.remove(ball)
@@ -205,20 +225,24 @@ def main():
                     if block.destructible:
                         blocks.remove(block)
                         score += block.point_value
-                        if random.random() < 0.9: # Luck chance of powerups
-                            powerups.append(PowerUp(block.rect.centerx, block.rect.centery))
+                        if random.random() < 0.9:
+                            powerup_type = random.choice(['enlarge', 'extra_ball'])
+                            powerups.append(PowerUp(block.rect.centerx, block.rect.centery, powerup_type))
 
         for powerup in powerups[:]:
             powerup.move()
             if powerup.impacts_with_paddle(paddle):
+                if powerup.powerup_type == 'enlarge':
+                    paddle.enlarge()
+                elif powerup.powerup_type == 'extra_ball':
+                    new_ball1 = Ball(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2, 10)
+                    new_ball2 = Ball(SCREEN_WIDTH // 2 + 50, SCREEN_HEIGHT // 2, 10)
+                    balls.append(new_ball1)
+                    balls.append(new_ball2)
                 powerups.remove(powerup)
-                for _ in range(5):
-                    new_balls.append(Ball(paddle.rect.centerx, paddle.rect.top - 10, 10))
-
+                
             if powerup.rect.top > SCREEN_HEIGHT:
                 powerups.remove(powerup)
-
-        balls.extend(new_balls)
 
         remaining_blocks = [block for block in blocks if block.destructible]
         if len(remaining_blocks) == 0:
@@ -246,4 +270,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
