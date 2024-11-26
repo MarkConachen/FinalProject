@@ -39,9 +39,24 @@ class Ball:
         self.x += self.dx
         self.y += self.dy
 
+        if self.x - self.radius <= 0 or self.x + self.radius >= SCREEN_WIDTH:
+            self.dx *= -1 # Reverse horizontal direction on impact
+
+        if self.y - self.radius <= 0:
+            self.dy *-1 # Reverse vertical direction on impact
+
+        if self.y + self.radius >= SCREEN_HEIGHT:
+            return False
+        return True
+
+
     def draw(self):
         pygame.draw.circle(screen, GREEN, (self.x, self.y), self.radius)
 
+    def impacts_with_paddle(self, paddle):
+        ball_rect = pygame.Rect(self.x - self.radius, self.y - self.radius, self.radius * 2, self.radius * 2)
+        return ball_rect.colliderect(paddle.rect)
+    
 def main():
     clock = pygame.time.Clock()
     running = True
@@ -61,6 +76,9 @@ def main():
             paddle.move(5)  # Move right
 
         ball.move()
+
+        if ball.impacts_with_paddle(paddle):
+            ball.dy *= -1
 
         screen.fill((0, 0, 0))
 
