@@ -201,7 +201,7 @@ def create_level_from_file(level_file):
 
 def main():
     clock = pygame.time.Clock()
-    level = 4
+    level = 1
     max_levels = 4
     running = True
     score = 0
@@ -227,7 +227,7 @@ def main():
             paddle.move(5)  # Move right
 
         paddle.update()
-        
+
         for ball in balls[:]:
             if not ball.move():
                 balls.remove(ball)
@@ -256,7 +256,7 @@ def main():
                     balls.append(new_ball1)
                     balls.append(new_ball2)
                 powerups.remove(powerup)
-                
+
             if powerup.rect.top > SCREEN_HEIGHT:
                 powerups.remove(powerup)
 
@@ -264,7 +264,14 @@ def main():
         if len(remaining_blocks) == 0:
             if level < max_levels:
                 level += 1
+                powerups.clear()
+                balls.clear()
+
+                balls.append(Ball(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 10))
+                paddle = Paddle(SCREEN_WIDTH // 2 - 60, SCREEN_HEIGHT - 30, 120, 20, color=WHITE)
                 blocks = create_level_from_file(f"level{level}.txt")
+                
+                pygame.time.wait(500) # Half a second pause between stages
             else:
                 running = False
                 game_over(score)
