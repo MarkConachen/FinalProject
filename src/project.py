@@ -103,17 +103,7 @@ class Block:
     def impacts_with_ball(self, ball):
         ball_rect = pygame.Rect(ball.x - ball.radius, ball.y - ball.radius, ball.radius * 2, ball.radius * 2)
         return ball_rect.colliderect(self.rect)
-
-def get_paddle_color(level):
-    if level == 1:
-        return WHITE
-    elif level == 2:
-        return BLUE
-    elif level == 3:
-        return RED
-    else:
-        return WHITE
-    
+  
 def draw_score(score):
     font = pygame.font.SysFont(None, 36)
     score_text = font.render(f"Score: {score}", True, WHITE)
