@@ -12,6 +12,8 @@ BLUE = (0, 0, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 
+BLOCK_COLOR = (255, 165, 0)
+
 class Paddle:
     def __init__(self, x, y, width, height, color):
         self.rect = pygame.Rect(x, y, width, height)
@@ -56,13 +58,49 @@ class Ball:
     def impacts_with_paddle(self, paddle):
         ball_rect = pygame.Rect(self.x - self.radius, self.y - self.radius, self.radius * 2, self.radius * 2)
         return ball_rect.colliderect(paddle.rect)
-    
+
+class Block:
+    def __init__(self, x, y, width, height, color):
+        self.rect = pygame.Rect(x, y, width, height)
+        self.color = color
+
+    def draw(self):
+        pygame.draw.rect(screen, self.color, self.rect)
+
+    def impacts_with_ball(self, ball):
+        ball_rect = pygame.Rect(ball.x - ball.radius, ball.y - ball.radius, ball.radius * 2, ball.radius * 2)
+        return ball_rect.colliderect(self.rect)
+
+def create_level(level):
+    blocks = []
+    block_width = 80
+    block_height = 30
+
+    if level == 1:
+        rows = 3
+        cols = 10
+    elif level == 2:
+        rows = 4
+        cols = 10
+    elif level == 3:
+        rows = 5
+        cols = 10
+
+    for row in range(rows):
+        for col in range(cols):
+            blocks.append(Block(col * (block_width + 10) + 50, row * (block_height + 5) + 50, block_width, block_height, BLOCK_COLOR))
+
+    return blocks
+
 def main():
     clock = pygame.time.Clock()
+    level = 1
     running = True
 
     paddle = Paddle(SCREEN_WIDTH // 2 - 60, SCREEN_HEIGHT - 30, 120, 20, color=WHITE)
     ball = Ball(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 10)
+
+    blocks = create_level(level)
 
     while running:
         for event in pygame.event.get():
@@ -75,16 +113,29 @@ def main():
         if keys[pygame.K_RIGHT]:
             paddle.move(5)  # Move right
 
-        ball.move()
+        if not ball.move():
+            running = False
 
         if ball.impacts_with_paddle(paddle):
             ball.dy *= -1
+
+        for block in blocks[:]:
+            if block.impacts_with_ball(ball):
+                ball.dy *= -1
+                blocks.remove(block)
+
+        if len(blocks) == 0:
+            level += 1
+            blocks = create_level(level)
 
         screen.fill((0, 0, 0))
 
         paddle.draw()
         ball.draw()
 
+        for block in blocks:
+            block.draw()
+            
         pygame.display.flip()
 
         clock.tick(60)
