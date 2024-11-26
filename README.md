@@ -1,50 +1,24 @@
-# Block Breakers
+# BLOCK BREAKERS
 
-## Repository
-https://github.com/MarkConachen/FinalProject.git
+## Demo
+Demo Video: https://streamable.com/jporsm?src=player-page-share
+            https://streamable.com/jporsm
+
+## GitHub Repository
+GitHub Repo: https://github.com/MarkConachen/FinalProject.git
 
 ## Description
-What I will be creating is an Atari game called Breakout, which is where a ball slowly falls into a paddle that the player controls, and must break the blocks above with the ball. I chose this because it is the first game I ever played that sparked my interest in this field and it is relevant to media and digital arts because it is one of the originators of gaming.
+My game Block Breakers is a direct inspiration from the Atari game "Breakout". You control a paddle at the bottom of the screen using the left and right arrow keys to reflect a ball into blocks that are above you. There are two types of blocks, ones that have specific colors tied to the level and gray blocks that do not offer
+points whenever the ball collides with them. Whenever the ball collides with a breakable block, there is a chance for a power-up to spawn. The two power-ups I implemented were two ball spawns, and a way to increase the paddle size for 10 seconds. These power-ups are designed to make the levels easier to complete, and yes they
+do stack effects on top of each other. I made 4 levels, all of which was done in a seperate level.txt file through ASCII art which is so cool and did not know I could do it that way. It allowed me to customize my own levels to my liking and it was very efficient. After completing level 1, you advance to the next level automatically
+and clear the screen of all power-ups and balls that were from the previous level. If the ball ever reaches below your paddle a "Game Over!" screen will show, and also total your final score as well as putting it into the terminal.
 
-## Features
-- Feature 1:
-  A ball that spawns in from which the player must control a paddle to deflect the ball back into blocks that break.
+ As you may notice there are different files included in this project such as "powerup1.png" and "powerup2.png". I applied what I learned from previous lessons to make the power-up icons more appealing to look at instead of just a falling solid color block and explaining it that way.I wanted to keep the game as simple looking as
+ I could however, as I felt a personal attachment to this project as it was inspired from the first game I have ever played. I also designed it that way so that people could maybe experience playing a video game for the first time and not be overwhelmed by the visual clutter. As I stated before I originally just had rows and columns
+ with blocks that offered points when you collided with them, but I learned how to make a level through the level.txt files, and I wanted to make truly unique levels that are different from the original game. 
 
-I am going to initalize a ball that spawns at a specific location on the screen and when you start the game it moves in a set direction with base speed. You will control a paddle at the bottom with left and right inputs (probably arrow keys) and when the ball hits a block, the direction is reversed causing it to come back down.
+ As for future improvements I would add sounds such as the ball colliding against the bricks, paddle, and walls, as well as power-up aquisition noises. Although I wanted to really keep the idea as simple as possible it would be cool to add transitional effects from going to different levels. I also think making more power-ups that are
+ very unique in gameplay but keeping the old-school style of this game would be ideal. 
 
-- Feature 2:
-  Having a scoring system and different levels to keep the player engaged.
-
-Every time the player breaks a block, the score increases by a set number of points. This number will stop increasing when the player fails, and or beats the game to reach a max score. The way to go to a next level will be determined if there are any remaining blocks on the screen and if not it will move onto the next level.
-
-- Feature 3:
-  Different power-ups that enhance the gameplay to make it more interesting.
-
-Power-ups will be spawned randomly when a brick is destroyed up to a certain amount per level, and they will provide specific effects such as bigger paddle size, giving extra points multiplier, etc. They will fall slowly from a broken block, and can be collected by colliding with the paddle that the player controls.
-
-## Challenges
-- One of the most challenging things would be the game physics itself, making sure everything works smoothly and correctly.
-
-- Implementing good user interface design, and making sure the scoring information is displaying correctly.
-
-- Applying different levels and power-ups that are interesting and unique in design.
-
-## Outcomes
-Ideal Outcome:
-- The ideal outcome is an engaing recreation of the Breakout game that showcases smooth and responsive gameplay, having a scoring system with different levels, having different power-ups that are unique, and visually it has a lot of effort put into it.
-
-Minimal Viable Outcome:
-- The minimum is a Breakout game that you control a paddle to hit blocks, but it has no scoring system, different levels, power-ups, and visually it is very bland.
-
-## Milestones
-- Week 1
-1. Research and create the game mechanics which entail the paddle movement and ball physics.
-2. Creating designs for the game itself such as basic graphics for the blocks, ball, and paddle.
-
-- Week 2
-1. Creating the main gameplay loop which allows the ball to interact with the paddle, and bounce up to hit the bricks.
-2. Figuring out how to create the scoring system, power-ups, and new levels.
-
-- Week N (Final)
-1. Refining the gameplay mechanics to be more smooth, updating the visual quality, and ensuring power-ups, scoring system, and atleast another level is completed.
-2. Playtesting my game and letting other people play as well to aquire feedback.
+Overall this project was an accumulation of knowledge I learned over the semester as a beginner coder, and I really did enjoy this project to it's full potential. I learned new techniques through this project and did my fair share of documentation diving (tm) to help assist me in creating a game that got me into this field to begin with.
+There were a lot of challenges that made me doubt if I could really implement some of the features correctly and not have a empty shell of a game to showcase. I truly hope you enjoyed watching (and or playing) my game, and atleast it showcased a reimagination of the Atari game Breakout.
