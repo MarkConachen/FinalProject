@@ -17,11 +17,13 @@ GREEN = (0, 255, 0)
 BLOCK_COLOR_LEVEL_1 = (255, 165, 0)
 BLOCK_COLOR_LEVEL_2 = (0, 255, 255)
 BLOCK_COLOR_LEVEL_3 = (255, 0, 255)
+BLOCK_COLOR_LEVEL_4 = (255, 0, 0)
 BLOCK_COLOR_UNBREAKABLE = (128, 128, 128)
 
 BLOCK_POINTS_LEVEL_1 = 10
 BLOCK_POINTS_LEVEL_2 = 20
 BLOCK_POINTS_LEVEL_3 = 30
+BLOCK_POINTS_LEVEL_4 = 40
 BLOCK_POINTS_UNBREAKABLE = 0
 
 class Paddle:
@@ -178,6 +180,13 @@ def create_level_from_file(level_file):
                         block_width, block_height,
                         BLOCK_COLOR_LEVEL_3, BLOCK_POINTS_LEVEL_3
                     ))
+                if char == '4':
+                    blocks.append(Block(
+                        col_idx * (block_width + block_spacing) + x_offset,
+                        row_idx * (block_height + block_spacing) + y_offset,
+                        block_width, block_height,
+                        BLOCK_COLOR_LEVEL_4, BLOCK_POINTS_LEVEL_4
+                    ))
                 elif char == 'U': # Letter for unbreakable block
                     blocks.append(Block(
                         col_idx * (block_width + block_spacing) + x_offset,
@@ -192,7 +201,8 @@ def create_level_from_file(level_file):
 
 def main():
     clock = pygame.time.Clock()
-    level = 1
+    level = 4
+    max_levels = 4
     running = True
     score = 0
 
@@ -252,8 +262,12 @@ def main():
 
         remaining_blocks = [block for block in blocks if block.destructible]
         if len(remaining_blocks) == 0:
-            level += 1
-            blocks = create_level_from_file(f"level{level}.txt")
+            if level < max_levels:
+                level += 1
+                blocks = create_level_from_file(f"level{level}.txt")
+            else:
+                running = False
+                game_over(score)
 
         screen.fill((0, 0, 0))
         paddle.draw()
@@ -286,7 +300,7 @@ def game_over(score):
     screen.blit(final_score_text, (SCREEN_WIDTH // 2 - final_score_text.get_width() // 2, SCREEN_HEIGHT // 2 + 50))
     pygame.display.flip()
 
-    pygame.time.wait(6000)
+    pygame.time.wait(5000)
 
 if __name__ == "__main__":
     main()
